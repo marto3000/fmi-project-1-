@@ -7,6 +7,6 @@ using namespace std;
 int main()
 {
 	User user;
-	//user.writeUser();
+	user.writeUser();
 	//user.giveUser();
 }
