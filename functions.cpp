@@ -4,34 +4,39 @@
 using namespace std;
 //file location: "C:/Users/ACER/source/repos/fmi project (1)/file.txt" !!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
 
-User::User()
+User::User()//not logged default user
 {
-	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/file.txt", ios::out);
-	int leng = 13;//name length
-	username = new char[leng];
-	strcpy_s(username, leng, "default name");
-	writeNewUser.write((char*)&leng, sizeof(leng));
-	writeNewUser.write(username, leng).write("\n", 1);
+	username = new char[13];//name length
+	strcpy_s(username, 13, "default name");
 
-	leng = 17;//password length
-	password = new char[leng];
-	strcpy_s(password, leng, "default password");
-	writeNewUser.write((char*)&leng, sizeof(leng));
-	writeNewUser.write(password,leng).write("\n", 1);
-
-	leng = 14;//email length;
-	email = new char[leng];
-	strcpy_s(email, leng, "default email");
-	writeNewUser.write((char*)&leng, sizeof(leng));
-	writeNewUser.write(email, leng).write("\n", 1);
-
-	writeNewUser.close();
+	password = new char[17];//password length
+	strcpy_s(password, 17, "default password");
+	
+	email = new char[14];//email length;
+	strcpy_s(email, 14, "default email");
 
 	//cout << username << "\n";
 	//cout << password << "\n";
 	//cout << email << "\n";
 }
-void User::giveUser()
+void User::writeUser()//for saving new users in the file
+{
+	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/file.txt", ios::out);
+	int leng = strlen(username) + 1;
+	writeNewUser.write((char*)&leng, sizeof(leng));
+	writeNewUser.write(username, leng).write("\n", 1);
+
+	leng = strlen(password) + 1;
+	writeNewUser.write((char*)&leng, sizeof(leng));
+	writeNewUser.write(password, leng).write("\n", 1);
+
+	leng = strlen(email) + 1;
+	writeNewUser.write((char*)&leng, sizeof(leng));
+	writeNewUser.write(email, leng).write("\n", 1);
+
+	writeNewUser.close();
+}
+void User::giveUser()//from the file
 {
 	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/file.txt", ios::in);
 	int leng = 0;

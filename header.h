@@ -9,7 +9,9 @@ class User
 public:
 	User();
 	~User();
+	void writeUser();
 	void giveUser();
+	void giveLoadedUser();
 };
 class Destination
 {
