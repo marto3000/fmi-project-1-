@@ -3,9 +3,9 @@
 class User
 {
 	char* username;
-	char* pasword;
+	char* password;
 	char* email;
-	Destination* destinations;
+	//Destination* destinations;
 public:
 	User();
 	~User();
