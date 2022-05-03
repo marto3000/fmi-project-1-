@@ -2,7 +2,7 @@
 #include <fstream>
 #include "header.h"
 using namespace std;
-//file location: "C:/Users/ACER/source/repos/fmi project (1)/file.txt" !!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
+//files locations: "C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt" !!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
 
 User::User()//not logged default user
 {
@@ -25,7 +25,7 @@ User::User()//not logged default user
 }
 void User::writeUser()//for saving new users in the end of the file (after the last user)
 {
-	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/file.txt", ios::app);
+	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::app);
 	int maxLeng = strlen(username) + 1 + strlen(password) + 1 + strlen(email) + 1 + (3 * 4) + (3 * 2);//each char array + "\0" from each array + every number telling the array size + every "\n"
 	writeNewUser.write((char*)&maxLeng, sizeof(maxLeng));
 	//writing username
@@ -48,7 +48,7 @@ void User::giveUser(int position)//from the file
 	{
 		//write validation later
 	}
-	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/file.txt", ios::in);
+	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
 	for (int i = 0; i < position; i++)//this starts to skip users from the first one
 	{
 		int tempLen = 0;
