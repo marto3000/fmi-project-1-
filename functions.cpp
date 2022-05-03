@@ -2,8 +2,11 @@
 #include <fstream>
 #include "header.h"
 using namespace std;
-//files locations: "C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt" !!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
-
+//files locations: "C:/Users/ACER/source/repos/fmi project (1)/UsersLoginPosition.txt"			!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
+//				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt"				!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
+//				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsPosition.txt"		!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
+//				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt"			!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
+				   
 User::User()//not logged default user
 {
 	username = new char[13];//name length
