@@ -10,7 +10,7 @@ public:
 	User();
 	~User();
 	void writeUser();
-	void giveUser();
+	void giveUser(int position);
 	void giveLoadedUser();
 };
 class Destination
