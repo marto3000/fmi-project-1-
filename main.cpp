@@ -8,5 +8,5 @@ int main()
 {
 	User user;
 	//user.writeUser();
-	user.giveUser(1);
+	//user.giveUser(2);//skipping n number of users/the first user is in position 0 like in array
 }

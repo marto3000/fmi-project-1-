@@ -6,6 +6,7 @@ class User
 	char* password;
 	char* email;
 	//Destination* destinations;
+	//int destCount;
 public:
 	User();
 	~User();
