@@ -12,12 +12,12 @@ User::User()//not logged default user
 	strcpy_s(username, 13, "default nam3");
 
 	password = new char[17];//password length
-	strcpy_s(password, 17, "default passwor3");
+	strcpy_s(password, 17, "default passwor1");
 	
 	email = new char[14];//email length;
-	strcpy_s(email, 14, "default emai3");
+	strcpy_s(email, 14, "default emai1");
 
-	destCount = 3;
+	destCount = 1;
 	//cout << username << "\n";
 	//cout << password << "\n";
 	//cout << email << "\n";
@@ -25,6 +25,7 @@ User::User()//not logged default user
 }
 void User::writeUser()//for saving new users in the end of the file (after the last user)
 {
+	//writing the maxLeng
 	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::app);
 	int maxLeng = strlen(username) + 1 + strlen(password) + 1 + strlen(email) + 1 + sizeof(destCount) + (3 * 4) + (4 * 2);//each char array + "\0" from each array + the destination count + every number telling the array size + every "\n"
 	writeNewUser.write((char*)&maxLeng, sizeof(maxLeng));
