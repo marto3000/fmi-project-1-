@@ -46,67 +46,96 @@ void User::writeUser()//for saving new users in the end of the file (after the l
 	writeNewUser.write((char*)&destCount, sizeof(destCount)).write("\n", 1);
 	writeNewUser.close();
 }
-void User::giveUser(char* name)//from the file
+void User::giveUser(char* name, char* pass)//from the file
 {
 	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
-	//searching for user
+	//searching for user's email
 	int leng;
 	int skip;
 	for (bool i = false; i == false; i = i)
 	{
 		giveUser.read((char*)&skip, sizeof(skip));
+		//when the end of the file is reached
 		if (giveUser.tellg() < 0)
 		{
+			cout << "Wrong email or password.ne";
 			i = true;
-			cout << "no";//comment or delete later
 		}
 		else
 		{
 			int skipFrom = giveUser.tellg();
 			giveUser.read((char*)&leng, sizeof(leng));
+			//checking the email
 			if (leng == strlen(name) + 1)
 			{
 				char* give1 = new char[leng];
 				giveUser.read(give1, leng);
-				for (int pos = 0; pos < leng; pos++)
+				for (int charPos = 0; charPos < leng; charPos++)
 				{
-					if (give1[pos] != name[pos])
+					//on first wrong char
+					if (give1[charPos] != name[charPos])
 					{
 						giveUser.seekg(skipFrom + skip);
-						pos = leng;
+						charPos = leng;
+						delete[] give1;
 					}
-					if (pos == leng - 1)
+					//checking the password if the email is correct (must be after the "on first wrong letter")
+					if (charPos == leng - 1)
 					{
 						i = true;
-						//giving email
-						cout << give1 << "\n";//comment or delete later
-						//giving password
+						int leng2;
 						int pos = giveUser.tellg();
 						pos += 2;
-						giveUser.seekg(pos);
-						giveUser.read((char*)&leng, sizeof(leng));
-						char* give2 = new char[leng];
-						giveUser.read(give2, leng);
-						cout << give2 << "\n";//comment or delete later
-						//giving username
-						pos = giveUser.tellg();
-						pos += 2;
-						giveUser.seekg(pos);
-						giveUser.read((char*)&leng, sizeof(leng));
-						char* give3 = new char[leng];
-						giveUser.read(give3, leng);
-						cout << give3 << "\n";//comment or delete later
-						//giving destCount
-						pos = giveUser.tellg();
-						pos += 2;
-						giveUser.seekg(pos);
-						int give4 = 0;
-						giveUser.read((char*)&give4, sizeof(give4));
-						cout << give4 << "\n";//comment or delete later
+						giveUser.seekg(pos);//skipping "\n"
+						giveUser.read((char*)&leng2, sizeof(leng2));
+						if (leng2 == strlen(pass) + 1)
+						{
+							char* give2 = new char[leng2];
+							giveUser.read(give2, leng2);
+							for (int charPos2 = 0; charPos2 < leng2; charPos2++)
+							{
+								//on first wrong char
+								if (give2[charPos2] != pass[charPos2])
+								{
+									charPos2 = leng2;
+									delete[] give2;
+									//wrong password
+									cout << "Wrong email or password.";
+								}
+								//if the password is correct
+								if (charPos2 == leng2 - 1)
+								{
+									//giving email
+									cout << give1 << "\n";//comment or delete later
+									//giving password
+									cout << give2 << "\n";//comment or delete later
+									//giving username
+									pos = giveUser.tellg();
+									pos += 2;
+									giveUser.seekg(pos);
+									giveUser.read((char*)&leng2, sizeof(leng2));
+									char* give3 = new char[leng2];
+									giveUser.read(give3, leng2);
+									cout << give3 << "\n";//comment or delete later
+									//giving destCount
+									pos = giveUser.tellg();
+									pos += 2;
+									giveUser.seekg(pos);
+									int give4 = 0;
+									giveUser.read((char*)&give4, sizeof(give4));
+									cout << give4 << "\n";//comment or delete later
 
-						delete[] give1;
-						delete[] give2;
-						delete[] give3;
+									delete[] give1;
+									delete[] give2;
+									delete[] give3;
+								}
+							}
+						}
+						//shorter/longer password
+						else
+						{
+							cout << "Wrong email or password.pl";
+						}
 					}
 				}
 			}

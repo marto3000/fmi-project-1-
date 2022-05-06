@@ -8,8 +8,10 @@ int main()
 {
 	User user;
 	//user.writeUser();
-	char* temp = new char[14];
-	strcpy_s(temp, 14, "default emai2");
-	user.giveUser(temp);
-	delete[] temp;
+	char* temp1 = new char[14];
+	strcpy_s(temp1, 14, "default emai2");
+	char* temp2 = new char[17];
+	strcpy_s(temp2, 17, "default passwor2");
+	user.giveUser(temp1, temp2);
+	delete[] temp1;
 }
