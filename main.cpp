@@ -7,6 +7,9 @@ using namespace std;
 int main()
 {
 	User user;
-	user.writeUser();
-	//user.giveUser(2);//skipping n number of users/the first user is in position 0 like in array
+	//user.writeUser();
+	char* temp = new char[14];
+	strcpy_s(temp, 14, "default emai2");
+	user.giveUser(temp);
+	delete[] temp;
 }
