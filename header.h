@@ -11,7 +11,8 @@ public:
 	User();
 	~User();
 	void writeUser();
-	void giveUser(char* name, char* pass);
+	void login();
+	bool giveUser(char* name, char* pass);
 };
 class Destination
 {

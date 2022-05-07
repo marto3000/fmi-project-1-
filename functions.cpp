@@ -8,16 +8,16 @@ using namespace std;
 				   
 User::User()//not logged default user
 {
-	email = new char[14];//email length;
-	strcpy_s(email, 14, "default emai4");
+	email = new char[15];//email length;
+	strcpy_s(email, 15, "default_email5");
 
-	password = new char[17];//password length
-	strcpy_s(password, 17, "default passwor4");
+	password = new char[18];//password length
+	strcpy_s(password, 18, "default_password5");
 	
-	username = new char[13];//name length
-	strcpy_s(username, 13, "default nam4");
+	username = new char[14];//name length
+	strcpy_s(username, 14, "default_name5");
 
-	destCount = 4;
+	destCount = 5;
 
 	//cout << email << "\n";
 	//cout << password << "\n";
@@ -46,7 +46,46 @@ void User::writeUser()//for saving new users in the end of the file (after the l
 	writeNewUser.write((char*)&destCount, sizeof(destCount)).write("\n", 1);
 	writeNewUser.close();
 }
-void User::giveUser(char* name, char* pass)//from the file
+void User::login()
+{
+	bool isLogged = false;//default_email1 default_password1
+	while (isLogged == false)
+	{
+		char* getEmail = new char[1024];
+		char* getPass = new char[1024];
+		cout << "Enter your email and password: ";
+		cin >> getEmail;
+		cin >> getPass;
+		getPass[strlen(getPass)] = '\0';
+		char* email = new char[strlen(getEmail) + 1];
+		strcpy_s(email, strlen(getEmail) + 1, getEmail);
+		email[strlen(getEmail)] = '\0';
+		char* pass = new char[strlen(getPass) + 1];
+		strcpy_s(pass, strlen(getPass) + 1, getPass);
+		pass[strlen(getPass)] = '\0';
+		delete[] getEmail;
+		delete[] getPass;
+		isLogged = giveUser(email, pass);
+		delete[] email;
+		delete[] pass;
+		if (isLogged == false)
+		{
+			int tryAgain = 0;
+			while (tryAgain > 2 || tryAgain < 1)
+			{
+				cout << "\nTry again?\n";
+				cout << "1 - yes\n";
+				cout << "2 - no\n";
+				cin >> tryAgain;
+			}
+			if (tryAgain == 2)
+			{
+				isLogged = true;//not actually logged
+			}
+		}
+	}
+}
+bool User::giveUser(char* name, char* pass)//from the file
 {
 	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
 	//searching for user's email
@@ -58,8 +97,9 @@ void User::giveUser(char* name, char* pass)//from the file
 		//when the end of the file is reached
 		if (giveUser.tellg() < 0)
 		{
-			cout << "Wrong email or password.ne";
+			cout << "Wrong email or password.";
 			i = true;
+			return false;
 		}
 		else
 		{
@@ -101,14 +141,21 @@ void User::giveUser(char* name, char* pass)//from the file
 									delete[] give2;
 									//wrong password
 									cout << "Wrong email or password.";
+									return false;
 								}
 								//if the password is correct
 								if (charPos2 == leng2 - 1)
 								{
 									//giving email
-									cout << give1 << "\n";//comment or delete later
+									email = new char[strlen(give1) + 1];
+									strcpy_s(email, strlen(give1) + 1, give1);
+									email[strlen(give1)] = '\0';
+									//cout << email << "\n";//comment or delete later
 									//giving password
-									cout << give2 << "\n";//comment or delete later
+									password = new char[strlen(give2) + 1];
+									strcpy_s(password, strlen(give2) + 1, give2);
+									password[strlen(give2)] = '\0';
+									//cout << password << "\n";//comment or delete later
 									//giving username
 									pos = giveUser.tellg();
 									pos += 2;
@@ -116,25 +163,32 @@ void User::giveUser(char* name, char* pass)//from the file
 									giveUser.read((char*)&leng2, sizeof(leng2));
 									char* give3 = new char[leng2];
 									giveUser.read(give3, leng2);
-									cout << give3 << "\n";//comment or delete later
+									username = new char[strlen(give3) + 1];
+									strcpy_s(username, strlen(give3) + 1, give3);
+									username[strlen(give3)] = '\0';
+									//cout << username << "\n";//comment or delete later
 									//giving destCount
 									pos = giveUser.tellg();
 									pos += 2;
 									giveUser.seekg(pos);
 									int give4 = 0;
 									giveUser.read((char*)&give4, sizeof(give4));
-									cout << give4 << "\n";//comment or delete later
+									destCount = give4;
+									//cout << destCount << "\n";//comment or delete later
 
 									delete[] give1;
 									delete[] give2;
 									delete[] give3;
+
+									return true;
 								}
 							}
 						}
 						//shorter/longer password
 						else
 						{
-							cout << "Wrong email or password.pl";
+							cout << "Wrong email or password.";
+							return false;
 						}
 					}
 				}
