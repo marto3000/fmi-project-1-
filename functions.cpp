@@ -4,17 +4,18 @@
 using namespace std;
 //files locations: "C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt"		!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
 //				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt"	!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
-				   
+
+
 User::User()//not logged default user
 {
 	username = new char[14];//name length
-	strcpy_s(username, 14, "default_name4");
+	strcpy_s(username, 14, "default name5");
 
 	password = new char[18];//password length
-	strcpy_s(password, 18, "default_password4");
+	strcpy_s(password, 18, "default password5");
 
 	email = new char[15];//email length;
-	strcpy_s(email, 15, "default_email4");
+	strcpy_s(email, 15, "default email5");
 
 	destCount = 0;
 
@@ -33,11 +34,103 @@ void User::registration()
 	email = new char[1];
 	email[0] = '\0';
 	//getting information
-	cout << "Enter your email: ";
 	char* getData = new char[1024];
+	//getting and validating username
+	cout << "Enter your username (latin letters,numbers, spaces and NO special characters): ";
+	//getting and validating username
+	bool good = false;
+	while (good == false)
+	{
+		cin.getline(getData, 1024, '\n');
+		for (int i = 0; i < strlen(getData); i++)
+		{
+			if (!((int(getData[i]) >= 48 && int(getData[i]) <= 57) || (int(getData[i]) >= 65 && int(getData[i]) <= 90) || (int(getData[i]) >= 97 && int(getData[i]) <= 122) || int(getData[i]) == 32))
+			{
+				i = strlen(getData);
+				cout << "The name contains forbidden character. Please enter again: ";
+				cin.getline(getData, 1024, '\n');
+			}
+			if (i == strlen(getData) - 1)
+			{
+				//checking if it already exist
+				//
+				ifstream checkUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
+				int leng;
+				int skip;
+				for (bool i = false; i == false; i = i)
+				{
+					checkUser.read((char*)&skip, sizeof(skip));
+					//when the end of the file is reached
+					if (checkUser.tellg() < 0)
+					{
+						good = true;
+						i = true;
+					}
+					else
+					{
+						int skipFrom = checkUser.tellg();
+						checkUser.read((char*)&leng, sizeof(leng));
+						//checking the username
+						if (leng == strlen(getData) + 1)
+						{
+							char* check = new char[leng];
+							checkUser.read(check, leng);
+							for (int charPos = 0; charPos < leng; charPos++)
+							{
+								//on first wrong char
+								if (check[charPos] != getData[charPos])
+								{
+									checkUser.seekg(skipFrom + skip);
+									charPos = leng;
+									delete[] check;
+								}
+								if (charPos == leng - 1)
+								{
+									cout << "This username already exist. Please choose a new one: ";
+									i = true;//not actually done
+									good = false;
+								}
+							}
+						}
+						else
+						{
+							checkUser.seekg(skipFrom + skip);
+						}
+					}
+				}
+				checkUser.close();
+				//
+			}
+		}
+		if (good == true)
+		{
+			cout << "You entered (" << getData << ") for your username. Are you fine with that?\nYOU WON'T BE ABLE TO CHANGE THIS LATER!!!\n";
+			cout << "1 - yes\n";
+			cout << "2 - no\n";
+			int tryAgain = 0;
+			cin >> tryAgain;
+			while (tryAgain > 2 || tryAgain < 1)
+			{
+				cout << "1 - yes\n";
+				cout << "2 - no\n";
+				cin >> tryAgain;
+			}
+			if (tryAgain == 2)
+			{
+				good = false;
+				cout << "Reenter your username: ";
+			}
+			else
+			{
 
+			}
+		}
+	}
+	
 	delete[] getData;
 }
+
+
 void User::writeUser()//for saving new users in the end of the file (after the last user)
 {
 	//writing the maxLeng
@@ -60,16 +153,24 @@ void User::writeUser()//for saving new users in the end of the file (after the l
 	writeNewUser.write((char*)&destCount, sizeof(destCount)).write("\n", 1);
 	writeNewUser.close();
 }
-void User::login()
+
+
+void User::login()//gets the login information and passes it to giveUser(...) for the actual login validtion
 {
-	bool isLogged = false;//default_email1 default_password1
+	bool isLogged = false;
 	while (isLogged == false)
 	{
 		char* getUser = new char[1024];
+		getUser[0] = '\0';
 		char* getPass = new char[1024];
-		cout << "Enter your username and password: ";
-		cin >> getUser;
-		cin >> getPass;
+		getPass[0] = '\0';
+		cout << "Enter your username and password (separate with <-enter): ";
+		cin.getline(getUser, 1024, '\n');
+		while (getUser[0] == '\0')//the 1 from the retry if can be accepted as cin.getline for getUser (this while prevents this)
+		{
+			cin.getline(getUser, 1024, '\n');
+		}
+		cin.getline(getPass, 1024, '\n');
 		getPass[strlen(getPass)] = '\0';
 		char* user = new char[strlen(getUser) + 1];
 		strcpy_s(user, strlen(getUser) + 1, getUser);
@@ -99,7 +200,9 @@ void User::login()
 		}
 	}
 }
-bool User::giveUser(char* name, char* pass)//from the file
+
+
+bool User::giveUser(char* name, char* pass)//actual login validation
 {
 	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
 	//searching for user's email
@@ -214,6 +317,8 @@ bool User::giveUser(char* name, char* pass)//from the file
 		}
 	}
 }
+
+
 User::~User()
 {
 	delete[] username;
