@@ -36,24 +36,24 @@ void User::registration()
 	//getting information
 	char* getData = new char[1024];
 	//getting and validating username
-	cout << "Enter your username (latin letters,numbers, spaces and NO special characters): ";
-	//getting and validating username
+	cout << "Enter your username (latin letters, numbers, spaces and NO special characters): ";
 	bool good = false;
 	while (good == false)
 	{
 		cin.getline(getData, 1024, '\n');
 		for (int i = 0; i < strlen(getData); i++)
 		{
+			//checking if there are unwanted characters
 			if (!((int(getData[i]) >= 48 && int(getData[i]) <= 57) || (int(getData[i]) >= 65 && int(getData[i]) <= 90) || (int(getData[i]) >= 97 && int(getData[i]) <= 122) || int(getData[i]) == 32))
 			{
 				i = strlen(getData);
 				cout << "The name contains forbidden character. Please enter again: ";
 				cin.getline(getData, 1024, '\n');
 			}
+			//if the username is fine
 			if (i == strlen(getData) - 1)
 			{
 				//checking if it already exist
-				//
 				ifstream checkUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
 				int leng;
 				int skip;
@@ -99,7 +99,6 @@ void User::registration()
 					}
 				}
 				checkUser.close();
-				//
 			}
 		}
 		if (good == true)
@@ -120,13 +119,51 @@ void User::registration()
 				good = false;
 				cout << "Reenter your username: ";
 			}
+			//the username is ready
 			else
 			{
-
+				username = new char[strlen(getData) + 1];
+				strcpy_s(username, strlen(getData) + 1, getData);
+				username[strlen(getData)] = '\0';
 			}
 		}
 	}
-	
+	//getting and validating password (validation from the code is not really needed)
+	cout << "Enter your password (non latin letters might not be displayed correctly): ";
+	good = false;
+	while (good == false)
+	{
+		getData[0] = '\0';
+		while (strlen(getData) == 0)
+		{
+			cin.getline(getData, 1024, '\n');
+		}
+		good = true;
+		cout << "You entered (" << getData << ") for your password. Are you alright with that?\n";
+		cout << "1 - yes\n";
+		cout << "2 - no\n";
+		int tryAgain = 0;
+		cin >> tryAgain;
+		while (tryAgain > 2 || tryAgain < 1)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - no\n";
+			cin >> tryAgain;
+		}
+		if (tryAgain == 2)
+		{
+			good = false;
+			cout << "Reenter your password: ";
+		}
+		else
+		{
+			password = new char[strlen(getData) + 1];
+			strcpy_s(password, strlen(getData) + 1, getData);
+			password[strlen(getData)] = '\0';
+		}
+	}
+	//getting and validating email
+	cout << "Enter your email (non latin letters might not be displayed correctly): ";
 	delete[] getData;
 }
 
