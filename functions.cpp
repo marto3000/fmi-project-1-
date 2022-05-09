@@ -38,6 +38,7 @@ void User::registration()
 	//getting and validating username
 	cout << "Enter your username (latin letters, numbers, spaces and NO special characters): ";
 	bool good = false;
+	bool ready = false;
 	while (good == false)
 	{
 		cin.getline(getData, 1024, '\n');
@@ -139,7 +140,7 @@ void User::registration()
 			cin.getline(getData, 1024, '\n');
 		}
 		good = true;
-		cout << "You entered (" << getData << ") for your password. Are you alright with that?\n";
+		cout << "You entered (" << getData << ") for your password. Are you alright with that?\nYOU WON'T BE ABLE TO CHANGE THIS LATER!!!\n";
 		cout << "1 - yes\n";
 		cout << "2 - no\n";
 		int tryAgain = 0;
@@ -162,9 +163,141 @@ void User::registration()
 			password[strlen(getData)] = '\0';
 		}
 	}
+	good = false;
 	//getting and validating email
 	cout << "Enter your email (non latin letters might not be displayed correctly): ";
+	while (good == false)
+	{
+		getData[0] = '\0';
+		while (strlen(getData) == 0)
+		{
+			cin.getline(getData, 1024, '\n');
+		}
+		//checking if it already exist
+		ifstream checkEmail("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::in);
+		int leng;
+		int skip;
+		for (bool i = false; i == false; i = i)
+		{
+			checkEmail.read((char*)&skip, sizeof(skip));
+			//when the end of the file is reached
+			if (checkEmail.tellg() < 0)
+			{
+				ready = true;
+				good = true;
+				i = true;
+				cout << "Your email is ("<<getData<<"). Are you sure this is the right one?\nYOU WONT BE ABLE TO RETRIEVE YOUR ACCOUNT USING YOUR EMAIL IF THE WRITEN ONE IS WRONG!!!\n";
+				cout << "1 - yes\n";
+				cout << "2 - no\n";
+				int tryAgain = 0;
+				cin >> tryAgain;
+				while (tryAgain > 2 || tryAgain < 1)
+				{
+					cout << "1 - yes\n";
+					cout << "2 - no\n";
+					cin >> tryAgain;
+				}
+				if (tryAgain == 2)
+				{
+					cout << "Reenter your email: ";
+					ready = false;
+					good = false;
+				}
+				else
+				{
+					email = new char[strlen(getData) + 1];
+					strcpy_s(email, strlen(getData) + 1, getData);
+					email[strlen(getData)] = '\0';
+				}
+			}
+			else
+			{
+				int skipFrom = checkEmail.tellg();
+				checkEmail.read((char*)&leng, sizeof(leng));
+				for (int i = 0; i < 2; i++)//skipping the email and the password in the file
+				{
+					leng = leng + 2 + checkEmail.tellg();//adding the length of '\n' and the curent position so we can skip the text
+					checkEmail.seekg(leng);
+					checkEmail.read((char*)&leng, sizeof(leng));
+				}
+				//checking the email
+				if (leng == strlen(getData) + 1)
+				{
+					char* check = new char[leng];
+					checkEmail.read(check, leng);
+					for (int charPos = 0; charPos < leng; charPos++)
+					{
+						//on first wrong char
+						if (check[charPos] != getData[charPos])
+						{
+							checkEmail.seekg(skipFrom + skip);
+							charPos = leng;
+							delete[] check;
+						}
+						if (charPos == leng - 1)
+						{
+							cout << "This email is already registered. Do you want to cancel the registration?\n";
+							i = true;//not actually done
+							good = true;//not actually valid
+							cout << "1 - yes\n";
+							cout << "2 - no\n";
+							int tryAgain = 0;
+							cin >> tryAgain;
+							while (tryAgain > 2 || tryAgain < 1)
+							{
+								cout << "1 - yes\n";
+								cout << "2 - no\n";
+								cin >> tryAgain;
+							}
+							if (tryAgain == 2)
+							{
+								cout << "Reenter your email: ";
+								good = false;
+							}
+						}
+					}
+				}
+				else
+				{
+					checkEmail.seekg(skipFrom + skip);
+				}
+			}
+		}
+		checkEmail.close();	
+	}
 	delete[] getData;
+	destCount = 0;
+	if (ready == true)
+	{
+		cout << "Are you sure you want to create your account?\nYOU WON'T BE ABLE TO DELETE IT LATER!!!\n";
+		cout << "1 - yes\n";
+		cout << "2 - no\n";
+		int tryAgain = 0;
+		cin >> tryAgain;
+		while (tryAgain > 2 || tryAgain < 1)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - no\n";
+			cin >> tryAgain;
+		}
+		if (tryAgain == 1)
+		{
+			writeUser();
+		}
+		else
+		{
+			username = new char[14];//name length
+			strcpy_s(username, 14, "default name5");
+
+			password = new char[18];//password length
+			strcpy_s(password, 18, "default password5");
+
+			email = new char[15];//email length;
+			strcpy_s(email, 15, "default email5");
+
+			destCount = 0;
+		}
+	}
 }
 
 
@@ -304,13 +437,13 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									username = new char[strlen(give1) + 1];
 									strcpy_s(username, strlen(give1) + 1, give1);
 									username[strlen(give1)] = '\0';
-									//cout << email << "\n";//comment or delete later
+									cout << username << "\n";//comment or delete later
 									//giving password
 									password = new char[strlen(give2) + 1];
 									strcpy_s(password, strlen(give2) + 1, give2);
 									password[strlen(give2)] = '\0';
-									//cout << password << "\n";//comment or delete later
-									//giving username
+									cout << password << "\n";//comment or delete later
+									//giving email
 									pos = giveUser.tellg();
 									pos += 2;
 									giveUser.seekg(pos);
@@ -320,7 +453,7 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									email = new char[strlen(give3) + 1];
 									strcpy_s(email, strlen(give3) + 1, give3);
 									email[strlen(give3)] = '\0';
-									//cout << username << "\n";//comment or delete later
+									cout << email << "\n";//comment or delete later
 									//giving destCount
 									pos = giveUser.tellg();
 									pos += 2;
@@ -328,7 +461,7 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									int give4 = 0;
 									giveUser.read((char*)&give4, sizeof(give4));
 									destCount = give4;
-									//cout << destCount << "\n";//comment or delete later
+									cout << destCount << "\n";//comment or delete later
 
 									delete[] give1;
 									delete[] give2;
