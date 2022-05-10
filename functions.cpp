@@ -19,11 +19,16 @@ User::User()//not logged default user
 
 	destCount = 0;
 
+	destinations = new Destination[destCount];
+	tempDestinations = new Destination[destCount];
+
 	//cout << username << "\n";s
 	//cout << password << "\n";
 	//cout << email << "\n";
 	//cout << destCount << "\n";
 }
+
+
 void User::registration()
 {
 	//clearing the user loaded data
@@ -118,7 +123,7 @@ void User::registration()
 			if (tryAgain == 2)
 			{
 				good = false;
-				cout << "Reenter your username: ";
+				cout << "Re enter your username: ";
 			}
 			//the username is ready
 			else
@@ -154,7 +159,7 @@ void User::registration()
 		if (tryAgain == 2)
 		{
 			good = false;
-			cout << "Reenter your password: ";
+			cout << "Re enter your password: ";
 		}
 		else
 		{
@@ -199,7 +204,7 @@ void User::registration()
 				}
 				if (tryAgain == 2)
 				{
-					cout << "Reenter your email: ";
+					cout << "Re enter your email: ";
 					ready = false;
 					good = false;
 				}
@@ -283,6 +288,7 @@ void User::registration()
 		if (tryAgain == 1)
 		{
 			writeUser();
+			cout << "You successfully created your account. The program will be closed for security reasons.";
 		}
 		else
 		{
@@ -368,6 +374,10 @@ void User::login()//gets the login information and passes it to giveUser(...) fo
 				isLogged = true;//not actually logged
 			}
 		}
+		else
+		{
+			loggedMenue(username);
+		}
 	}
 }
 
@@ -437,12 +447,12 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									username = new char[strlen(give1) + 1];
 									strcpy_s(username, strlen(give1) + 1, give1);
 									username[strlen(give1)] = '\0';
-									cout << username << "\n";//comment or delete later
+									//cout << username << "\n";//comment or delete later
 									//giving password
 									password = new char[strlen(give2) + 1];
 									strcpy_s(password, strlen(give2) + 1, give2);
 									password[strlen(give2)] = '\0';
-									cout << password << "\n";//comment or delete later
+									//cout << password << "\n";//comment or delete later
 									//giving email
 									pos = giveUser.tellg();
 									pos += 2;
@@ -453,7 +463,7 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									email = new char[strlen(give3) + 1];
 									strcpy_s(email, strlen(give3) + 1, give3);
 									email[strlen(give3)] = '\0';
-									cout << email << "\n";//comment or delete later
+									//cout << email << "\n";//comment or delete later
 									//giving destCount
 									pos = giveUser.tellg();
 									pos += 2;
@@ -461,7 +471,7 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									int give4 = 0;
 									giveUser.read((char*)&give4, sizeof(give4));
 									destCount = give4;
-									cout << destCount << "\n";//comment or delete later
+									//cout << destCount << "\n";//comment or delete later
 
 									delete[] give1;
 									delete[] give2;
@@ -489,7 +499,117 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 }
 
 
+void User::mainMenue()
+{
+	cout << "Welcome to the Adventurer's Diary!\n";
+	cout << "1 - register\n";
+	cout << "2 - login\n";
+	cout << "3 - exit\n";
+	int option = 0;
+	cin >> option;
+	while (option < 1 || option>3)
+	{
+		cout << "1 - register\n";
+		cout << "2 - login\n";
+		cout << "3 - exit\n";
+		cin >> option;
+	}
+	if (option == 1)
+	{
+		registration();
+	}
+	if (option == 2)
+	{
+		login();
+	}
+}
+
+
+void User::loggedMenue(char* user)
+{
+	cout << "Welcome " << user << "! What do you want to do today?\n";
+	cout << "1 - see my destinations ratings\n";
+	cout << "2 - rate a destination\n";
+	cout << "3 - exit account\n";
+	int option = 0;
+	cin >> option;
+	while (option < 1 || option>3)
+	{
+		cout << "1 - see my destinations ratings\n";
+		cout << "2 - rate a destination\n";
+		cout << "3 - exit account\n";
+		cin >> option;
+	}
+	if (option == 1)
+	{
+		
+	}
+	if (option == 2)
+	{
+		
+	}
+	if (option == 3)
+	{
+		mainMenue();
+	}
+}
+
+
+Destination::Destination()
+{
+	destination = new char[0];
+	time = new char[0];
+	comment = new char[0];
+	photos = new char[0];
+	grade = 0;
+}
+
+
+void Destination::rateDest()
+{
+	char* getData = new char[1024];
+	//getting the destination
+	cout << "Give the destination (place and country for example)(seperate with <-enter):";
+	bool good = false;
+	while (good == false)
+	{
+		getData[0] = '\0';
+		while (strlen(getData) == 0)
+		{
+			cin.getline(getData, 1024, '\n');
+		}
+		cout << "You entered: " << getData << "\nContinue?";
+		cout << "1 - yes\n";
+		cout << "2 - re enter\n";
+		cout << "3 - quit\n";
+		int option = 0;
+		cin >> option;
+		while (option < 1 || option>3)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - re enter\n";
+			cout << "3 - quit\n";
+			cin >> option;
+		}
+	}
+	delete[] getData;
+}
+
+
+Destination::~Destination()
+{
+	delete[] destination;
+	delete[] time;
+	delete[] comment;
+	delete[] photos;
+}
+
+
 User::~User()
 {
 	delete[] username;
+	delete[] password;
+	delete[] email;
+	delete[] destinations;
+	delete[] tempDestinations;
 }

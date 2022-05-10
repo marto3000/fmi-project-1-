@@ -7,8 +7,9 @@ using namespace std;
 int main()
 {
 	User user;
-	user.login();
+	//user.login();
 	//user.registration();
+	user.mainMenue();
 	
 	//char* temp1 = new char[15];
 	//strcpy_s(temp1, 15, "default_email1");
