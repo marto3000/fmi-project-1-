@@ -17,10 +17,7 @@ User::User()//not logged default user
 	email = new char[15];//email length;
 	strcpy_s(email, 15, "default email5");
 
-	destCount = 0;
-
-	destinations = new Destination[destCount];
-	tempDestinations = new Destination[destCount];
+	destCount = 1;
 
 	//cout << username << "\n";s
 	//cout << password << "\n";
@@ -528,29 +525,25 @@ void User::mainMenue()
 void User::loggedMenue(char* user)
 {
 	cout << "Welcome " << user << "! What do you want to do today?\n";
-	cout << "1 - see my destinations ratings\n";
-	cout << "2 - rate a destination\n";
-	cout << "3 - exit account\n";
 	int option = 0;
-	cin >> option;
-	while (option < 1 || option>3)
+	while (option != 3)
 	{
 		cout << "1 - see my destinations ratings\n";
 		cout << "2 - rate a destination\n";
 		cout << "3 - exit account\n";
 		cin >> option;
-	}
-	if (option == 1)
-	{
-		
-	}
-	if (option == 2)
-	{
-		
-	}
-	if (option == 3)
-	{
-		mainMenue();
+		if (option == 1)
+		{
+
+		}
+		if (option == 2)
+		{
+			destination.rateDest();
+		}
+		if (option == 3)
+		{
+			mainMenue();
+		}
 	}
 }
 
@@ -558,9 +551,14 @@ void User::loggedMenue(char* user)
 Destination::Destination()
 {
 	destination = new char[0];
-	time = new char[0];
 	comment = new char[0];
 	photos = new char[0];
+	yearS = 0;
+	monthS = 0;
+	dayS = 0;
+	yearE = 0;
+	monthE = 0;
+	dayE = 0;
 	grade = 0;
 }
 
@@ -568,17 +566,22 @@ Destination::Destination()
 void Destination::rateDest()
 {
 	char* getData = new char[1024];
-	//getting the destination
-	cout << "Give the destination (place and country for example)(seperate with <-enter):";
 	bool good = false;
-	while (good == false)
+	bool ready = false;
+	//getting the destination
+	if (good == false && ready == false)
+	{
+		cout << "Give the destination (place and country for example): ";
+	}
+	while (good == false && ready == false)
 	{
 		getData[0] = '\0';
 		while (strlen(getData) == 0)
 		{
 			cin.getline(getData, 1024, '\n');
 		}
-		cout << "You entered: " << getData << "\nContinue?";
+		good = true;
+		cout << "You entered: " << getData << "\nContinue?\n";
 		cout << "1 - yes\n";
 		cout << "2 - re enter\n";
 		cout << "3 - quit\n";
@@ -591,15 +594,296 @@ void Destination::rateDest()
 			cout << "3 - quit\n";
 			cin >> option;
 		}
+		if (option == 1)
+		{
+			destination = new char[strlen(getData) + 1];
+			strcpy_s(destination, strlen(getData) + 1, getData);
+			destination[strlen(getData)] = '\0';
+		}
+		if (option == 2)
+		{
+			good = false;
+			cout << "Re enter the destination: ";
+		}
+		if (option == 3)
+		{
+			ready = true;
+		}
+	}
+	good = false;
+	//getting and validating the time period
+	if (good == false && ready == false)
+	{
+		cout << "Give the starter date (yyyy mm dd)(separate with space ot <-enter): ";
+	}
+	validDate(yearS, monthS, dayS, good, ready);
+	good = false;
+	if (good == false && ready == false)
+	{
+		cout << "Give the end date (yyyy mm dd)(separate with space ot <-enter): ";
+	}
+	validDate(yearE, monthE, dayE, good, ready);
+	good = false;
+	if (good == false && ready == false)
+	{
+		while (!((yearS == yearE && monthS == monthE && dayS < dayE) || (yearS == yearE && monthS < monthE) || yearS < yearE))
+		{
+			cout << "The end date can't be before the starter date. Please enter again: ";
+			validDate(yearE, monthE, dayE, good, ready);
+		}
+	}
+	good = false;
+	//getting the grade
+	if (good == false && ready == false)
+	{
+		cout << "Rate the destination (1-5): ";
+	}
+	while (good == false && ready == false)
+	{
+		cin >> grade;
+		while (grade < 1 || grade>5)
+		{
+			cout << "Invalid rating. Please enter again: ";
+			cin >> grade;
+		}
+		good = true;
+		cout << "You entered: " << grade << "\nContinue?\n";
+		cout << "1 - yes\n";
+		cout << "2 - re enter\n";
+		cout << "3 - quit\n";
+		int option = 0;
+		cin >> option;
+		while (option < 1 || option>3)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - re enter\n";
+			cout << "3 - quit\n";
+			cin >> option;
+		}
+		if (option == 2)
+		{
+			good = false;
+			cout << "Re enter the rating: ";
+		}
+		if (option == 3)
+		{
+			ready = true;
+		}
+	}
+	//getting comment
+	good = false;
+	if (good == false && ready == false)
+	{
+		cout << "Give your comment for the destination (up to 1023 characters)(non latin letters might not be displayed propperly):\n";
+	}
+	while (good == false && ready == false)
+	{
+		getData[0] = '\0';
+		while (strlen(getData) == 0)
+		{
+			cin.getline(getData, 1024, '\n');
+		}
+		good = true;
+		cout << "You entered:\n\n" << getData << "\n\nContinue?\n";
+		cout << "1 - yes\n";
+		cout << "2 - re enter\n";
+		cout << "3 - quit\n";
+		int option = 0;
+		cin >> option;
+		while (option < 1 || option>3)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - re enter\n";
+			cout << "3 - quit\n";
+			cin >> option;
+		}
+		if (option == 1)
+		{
+			comment = new char[strlen(getData) + 1];
+			strcpy_s(comment, strlen(getData) + 1, getData);
+			comment[strlen(getData)] = '\0';
+		}
+		if (option == 2)
+		{
+			good = false;
+			cout << "Re enter your comment: ";
+		}
+		if (option == 3)
+		{
+			ready = true;
+		}
+	}
+	//getting and validating images names
+	good = false;
+	if (good == false && ready == false)
+	{
+		cout << "Give the names of your images (might contain only letters and _ )(have to be separated with space and have to end with the name extention (only .jpeg and .png))(non latin letters might not be displayed propperly): ";
+	}
+	photos = new char[1024];
+	photos[0] = '\0';
+	while (good == false && ready == false)
+	{
+		getData[0] = '\0';
+		while (strlen(getData) == 0)
+		{
+			cin.getline(getData, 1024, '\n');
+		}
+		//checking for correct name
+		if (!(strlen(getData) < 5))//less than a.png for example
+		{
+			for (int i = 0; i < strlen(getData); i++)
+			{
+				//cout << getData[i];
+				//on first invalid char
+				if ((int(getData[i]) < 65 || (int(getData[i]) > 90 && int(getData[i]) < 97) || int(getData[i]) > 122) && int(getData[i]) != 95 && int(getData[i]) != 46)
+				{
+					//invalid name at all
+					i = strlen(getData);
+					cout << "The name you gave contains invalid character.\n";
+				}
+				if (i == strlen(getData) - 5 && int(getData[i]) == 46)//? .jpeg
+				{
+					i++;
+					char* formatCheck = new char[5];
+					strcpy_s(formatCheck, 5, "jpeg");
+					for (int a = 0; a < 4; a++)
+					{
+						if (getData[i + a] != formatCheck[a])
+						{
+							//invalid name at all
+							cout << "File format is not recognised.\n";
+							a = 4;
+						}
+						if (a == 3)//it's .jpeg
+						{
+							if (strlen(photos) + strlen(getData) + 1 >= 1024)
+							{
+								cout << "You gave too many images or their names are just too long. You can't give more images.";
+							}
+							else
+							{
+								strcat_s(photos, 1024, getData);
+								photos[strlen(photos)] = '\0';
+								cout << " " << photos << "\n";
+							}
+						}
+					}
+					delete[] formatCheck;
+				}
+				if (i == strlen(getData) - 4 && int(getData[i]) == 46)//? .png
+				{
+					i++;
+					char* formatCheck = new char[4];
+					strcpy_s(formatCheck, 4, "png");
+					for (int a = 0; a < 3; a++)
+					{
+						if (getData[i + a] != formatCheck[a])
+						{
+							//invalid name at all
+							cout << "File format is not recognised.\n";
+							a = 3;
+						}
+						if (a == 2)//it's .png
+						{
+							strcat_s(photos, 1024, getData);
+							photos[strlen(photos)] = '\0';
+							cout << " " << photos << "\n";
+						}
+					}
+					delete[] formatCheck;
+				}
+			}
+		}
+		else
+		{
+			cout << "The name is too short to be valid\n";
+		}
+		good = true;
+		cout << "1 - give more images\n";
+		cout << "2 - stop giving images\n";
+		cout << "3 - quit\n";
+		int option = 0;
+		cin >> option;
+		while (option < 1 || option>3)
+		{
+			cout << "1 - give more images\n";
+			cout << "2 - stop giving images\n";
+			cout << "3 - quit\n";
+			cin >> option;
+		}
+		if (option == 1)
+		{
+			good = false;
+		}
+		if (option == 3)
+		{
+			ready = true;
+		}
+	}
+	if (good == true && ready == false)//adding in the file
+	{
+		cout << "You successfully created a new rating.\n";
+	}
+	if (ready == true)
+	{
+		cout << "You canceled the destination rating.\n";
 	}
 	delete[] getData;
+}
+
+
+void Destination::validDate(int &y, int &m, int &d, bool &good, bool &ready)
+{
+	while (good == false && ready == false)
+	{
+		cin >> y;
+		while (y < 0)
+		{
+			cout << "The year can't be negtive number. Enter again: ";
+			cin >> y;
+		}
+		cin >> m;
+		while (m < 1 || m > 12)
+		{
+			cout << "The month shall be between 1 and 12. Enter again: ";
+			cin >> m;
+		}
+		cin >> d;
+		while (d <= 0 || d > 31 || (m >= 8 && m % 2 == 1 && d > 30) || (m <= 7 && m % 2 == 0 && d > 30) || (m == 2 && y % 4 != 0 && d > 28) || (m == 2 && y % 4 == 0 && d > 29))
+		{
+			cout << "The day is invalid. Enter again: ";
+			cin >> d;
+		}
+		good = true;
+		cout << "You entered: " << y << "-" << m << "-" << d << "\nContinue?\n";
+		cout << "1 - yes\n";
+		cout << "2 - re enter\n";
+		cout << "3 - quit\n";
+		int option = 0;
+		cin >> option;
+		while (option < 1 || option>3)
+		{
+			cout << "1 - yes\n";
+			cout << "2 - re enter\n";
+			cout << "3 - quit\n";
+			cin >> option;
+		}
+		if (option == 2)
+		{
+			good = false;
+			cout << "Re enter the date: ";
+		}
+		if (option == 3)
+		{
+			ready = true;
+		}
+	}
 }
 
 
 Destination::~Destination()
 {
 	delete[] destination;
-	delete[] time;
 	delete[] comment;
 	delete[] photos;
 }
@@ -610,6 +894,4 @@ User::~User()
 	delete[] username;
 	delete[] password;
 	delete[] email;
-	delete[] destinations;
-	delete[] tempDestinations;
 }

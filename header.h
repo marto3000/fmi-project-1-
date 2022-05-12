@@ -1,12 +1,30 @@
 #ifndef HEADER
 #define HEADER
+
+class Destination
+{
+	char* destination;
+	char* comment;
+	char* photos;
+	int yearS;
+	int monthS;
+	int dayS;
+	int yearE;
+	int monthE;
+	int dayE;
+	int grade;
+public:
+	Destination();
+	~Destination();
+	void rateDest();
+	void validDate(int& y, int& m, int& d, bool& good, bool& ready);
+};
 class User
 {
 	char* username;
 	char* password;
 	char* email;
-	Destination* destinations;
-	Destination* tempDestinations;
+	Destination destination;
 	int destCount;
 public:
 	User();
@@ -18,16 +36,5 @@ public:
 	void mainMenue();
 	void loggedMenue(char* name);
 };
-class Destination
-{
-	char* destination;
-	char* time;
-	char* comment;
-	char* photos;
-	int grade;
-public:
-	Destination();
-	~Destination();
-	void rateDest();
-};
+
 #endif // !HEADER

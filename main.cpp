@@ -7,6 +7,7 @@ using namespace std;
 int main()
 {
 	User user;
+	Destination destination;
 	//user.login();
 	//user.registration();
 	user.mainMenue();
