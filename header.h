@@ -15,8 +15,8 @@ class Destination
 	int grade;
 public:
 	Destination();
-	//coppy constructor
-	//= operator
+	Destination(Destination const& getThis);
+	Destination& operator=(Destination const& getThis);
 	~Destination();
 	void rateDest(char* username);
 	void writeDest(char* username);
@@ -31,8 +31,8 @@ class User
 	Destination destination;
 public:
 	User();
-	//coppy constructor
-	//= operator
+	User(User const& getThis);
+	User& operator=(User const& getThis);
 	~User();
 	void registration();
 	void writeUser();//parth of registration

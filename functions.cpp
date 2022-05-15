@@ -6,7 +6,7 @@ using namespace std;
 //				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt"	!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
 
 
-//USER
+//USER----------------------------------------------------------------------------------------------------
 
 
 User::User()//not logged default user
@@ -20,10 +20,27 @@ User::User()//not logged default user
 	email = new char[15];//email length;
 	strcpy_s(email, 15, "default email5");
 
-	//cout << username << "\n";s
+	//cout << username << "\n";
 	//cout << password << "\n";
 	//cout << email << "\n";
-	//cout << destCount << "\n";
+}
+
+
+User::User(User const& getThis)
+{
+	username = getThis.username;
+	password = getThis.password;
+	email = getThis.email;
+}
+
+
+User& User::operator=(User const& getThis)
+{
+	username = getThis.username;
+	password = getThis.password;
+	email = getThis.email;
+
+	return *this;
 }
 
 
@@ -537,7 +554,7 @@ void User::loggedMenue(char* user)
 }
 
 
-//DESTINTIONS
+//DESTINATIONS----------------------------------------------------------------------------------------------------
 
 
 Destination::Destination()
@@ -552,6 +569,38 @@ Destination::Destination()
 	monthE = 0;
 	dayE = 0;
 	grade = 0;
+}
+
+
+Destination::Destination(Destination const& getThis)
+{
+	destination = getThis.destination;
+	comment = getThis.comment;
+	photos = getThis.photos;
+	yearS = getThis.yearS;
+	monthS = getThis.monthS;
+	dayS = getThis.dayS;
+	yearE = getThis.yearE;
+	monthE = getThis.monthE;
+	dayE = getThis.dayE;
+	grade = getThis.grade;
+}
+
+
+Destination& Destination::operator=(Destination const& getThis)
+{
+	destination = getThis.destination;
+	comment = getThis.comment;
+	photos = getThis.photos;
+	yearS = getThis.yearS;
+	monthS = getThis.monthS;
+	dayS = getThis.dayS;
+	yearE = getThis.yearE;
+	monthE = getThis.monthE;
+	dayE = getThis.dayE;
+	grade = getThis.grade;
+
+	return *this;
 }
 
 
@@ -1025,7 +1074,7 @@ void Destination::giveDest(char* username)
 }
 
 
-//destructors
+//destructors----------------------------------------------------------------------------------------------------
 
 
 Destination::~Destination()
