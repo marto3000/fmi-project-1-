@@ -21,6 +21,7 @@ public:
 	void rateDest(char* username);
 	void writeDest(char* username);
 	void validDate(int& y, int& m, int& d, bool& good, bool& ready);
+	void giveDest(char* username);
 };
 class User
 {

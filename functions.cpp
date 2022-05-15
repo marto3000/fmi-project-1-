@@ -6,6 +6,9 @@ using namespace std;
 //				   "C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt"	!!!REPLACE EVERYWHERE WHEN USING FILE WITH DIFFERENT PATH!!!
 
 
+//USER
+
+
 User::User()//not logged default user
 {
 	username = new char[14];//name length
@@ -520,7 +523,7 @@ void User::loggedMenue(char* user)
 		cin >> option;
 		if (option == 1)
 		{
-
+			destination.giveDest(username);
 		}
 		if (option == 2)
 		{
@@ -532,6 +535,9 @@ void User::loggedMenue(char* user)
 		}
 	}
 }
+
+
+//DESTINTIONS
 
 
 Destination::Destination()
@@ -823,7 +829,7 @@ void Destination::writeDest(char* username)
 {
 	//writing the maxLeng
 	ofstream writeNewDest("C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt", ios::app);
-	int maxLeng = strlen(username) + 1 + strlen(destination) + 1 + strlen(comment) + 1 + strlen(photos) + 1 + (3 * 7) + (4 * 4) + (5 * 2);//each char array + "\0" from each array + the leng of the 7 int values + every number telling the array size + every "\n"
+	int maxLeng = strlen(username) + 1 + strlen(destination) + 1 + strlen(comment) + 1 + strlen(photos) + 1 + (7 * 4) + (4 * 4) + (5 * 2);//each char array + "\0" from each array + the leng of the 7 int values + every number telling the array size + every "\n"
 	writeNewDest.write((char*)&maxLeng, sizeof(maxLeng));
 	//write username (so the rating can be found)
 	int leng = strlen(username) + 1;
@@ -902,6 +908,124 @@ void Destination::validDate(int &y, int &m, int &d, bool &good, bool &ready)
 		}
 	}
 }
+
+
+void Destination::giveDest(char* username)
+{
+	ifstream giveUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt", ios::in);
+	//searching for user's email in the locations' file
+	int leng;
+	int skip;
+	for (bool i = false; i == false; i = i)
+	{
+		giveUser.read((char*)&skip, sizeof(skip));
+		//when the end of the file is reached
+		if (giveUser.tellg() < 0)
+		{
+			cout << "\nEnd of results. If no results have been given than you hadn't made any reviews.\n";
+			i = true;
+		}
+		else
+		{
+			int skipFrom = giveUser.tellg();
+			giveUser.read((char*)&leng, sizeof(leng));
+			//checking the username
+			if (leng == strlen(username) + 1)
+			{
+				char* give1 = new char[leng];
+				giveUser.read(give1, leng);
+				for (int charPos = 0; charPos < leng; charPos++)
+				{
+					//on first wrong char
+					if (give1[charPos] != username[charPos])
+					{
+						giveUser.seekg(skipFrom + skip);
+						charPos = leng;
+						delete[] give1;
+					}
+					//getting the info
+					if (charPos == leng - 1)
+					{
+						int pos = giveUser.tellg();
+						pos += 2;
+						giveUser.seekg(pos);//skipping "\n"
+						//getting the destination
+						giveUser.read((char*)&leng, sizeof(leng));
+						giveUser.read(destination, leng);
+						pos = giveUser.tellg();
+						pos += 2;
+						giveUser.seekg(pos);//skipping "\n"
+						//getting the comment
+						giveUser.read((char*)&leng, sizeof(leng));
+						giveUser.read(comment, leng);
+						pos = giveUser.tellg();
+						pos += 2;
+						giveUser.seekg(pos);//skipping "\n"
+						//getting the photos
+						giveUser.read((char*)&leng, sizeof(leng));
+						giveUser.read(photos, leng);
+						pos = giveUser.tellg();
+						pos += 2;
+						giveUser.seekg(pos);//skipping "\n"
+						//getting the int values
+						giveUser.read((char*)&yearS, sizeof(yearS))
+								.read((char*)&monthS, sizeof(monthS))
+								.read((char*)&dayS, sizeof(dayS))
+								.read((char*)&yearE, sizeof(yearE))
+								.read((char*)&monthE, sizeof(monthE))
+								.read((char*)&dayE, sizeof(dayE))
+								.read((char*)&grade, sizeof(grade));
+						//giving all the info
+						cout << "\n\n" << destination << "\n";
+						cout << "from: " << yearS << "-" << monthS << "-" << dayS << "\n";
+						cout<<"to: " << yearE << "-" << monthE << "-" << dayE << "\n";
+						cout << grade << " out of 5\n";
+						cout << "\n" << comment << "\n\n";
+						//giving the photoes
+						for (int i = 0; i < strlen(photos); i++)
+						{
+							if (int(photos[i]) == 46)
+							{
+								if (int(photos[i + 1]) == 106)//this is for jpeg (106 is for "j")
+								{
+									for (int format = 0; format < 5; format++)
+									{
+										cout << photos[i];
+										i++;
+									}
+									cout << " ";
+								}
+								else//this is for png
+								{
+									for (int format = 0; format < 4; format++)
+									{
+										cout << photos[i];
+										i++;
+									}
+									cout << " ";
+								}
+							}
+							else//if "." is not reached
+							{
+								cout << photos[i];
+							}
+						}
+						cout << giveUser.tellg();
+						cout << "\n\n";
+					}
+				}
+			}
+			else
+			{
+				giveUser.seekg(skipFrom + skip);
+			}
+		}
+	}
+	giveUser.close();
+}
+
+
+//destructors
 
 
 Destination::~Destination()
