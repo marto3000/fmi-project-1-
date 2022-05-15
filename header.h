@@ -15,8 +15,11 @@ class Destination
 	int grade;
 public:
 	Destination();
+	//coppy constructor
+	//= operator
 	~Destination();
-	void rateDest();
+	void rateDest(char* username);
+	void writeDest(char* username);
 	void validDate(int& y, int& m, int& d, bool& good, bool& ready);
 };
 class User
@@ -25,14 +28,15 @@ class User
 	char* password;
 	char* email;
 	Destination destination;
-	int destCount;
 public:
 	User();
+	//coppy constructor
+	//= operator
 	~User();
 	void registration();
 	void writeUser();//parth of registration
 	void login();
-	bool giveUser(char* name, char* pass);//parth of login
+	bool giveUser(char* name, char* pass);//parth of login	
 	void mainMenue();
 	void loggedMenue(char* name);
 };

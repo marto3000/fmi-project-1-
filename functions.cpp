@@ -17,8 +17,6 @@ User::User()//not logged default user
 	email = new char[15];//email length;
 	strcpy_s(email, 15, "default email5");
 
-	destCount = 1;
-
 	//cout << username << "\n";s
 	//cout << password << "\n";
 	//cout << email << "\n";
@@ -268,7 +266,6 @@ void User::registration()
 		checkEmail.close();	
 	}
 	delete[] getData;
-	destCount = 0;
 	if (ready == true)
 	{
 		cout << "Are you sure you want to create your account?\nYOU WON'T BE ABLE TO DELETE IT LATER!!!\n";
@@ -297,8 +294,6 @@ void User::registration()
 
 			email = new char[15];//email length;
 			strcpy_s(email, 15, "default email5");
-
-			destCount = 0;
 		}
 	}
 }
@@ -308,7 +303,7 @@ void User::writeUser()//for saving new users in the end of the file (after the l
 {
 	//writing the maxLeng
 	ofstream writeNewUser("C:/Users/ACER/source/repos/fmi project (1)/UsersLoginData.txt", ios::app);
-	int maxLeng = strlen(username) + 1 + strlen(password) + 1 + strlen(email) + 1 + sizeof(destCount) + (3 * 4) + (4 * 2);//each char array + "\0" from each array + the destination count + every number telling the array size + every "\n"
+	int maxLeng = strlen(username) + 1 + strlen(password) + 1 + strlen(email) + 1 + (3 * 4) + (3 * 2);//each char array + "\0" from each array + the destination count + every number telling the array size + every "\n"
 	writeNewUser.write((char*)&maxLeng, sizeof(maxLeng));
 	//writing username
 	int leng = strlen(username) + 1;
@@ -322,8 +317,7 @@ void User::writeUser()//for saving new users in the end of the file (after the l
 	leng = strlen(email) + 1;
 	writeNewUser.write((char*)&leng, sizeof(leng));
 	writeNewUser.write(email, leng).write("\n", 1);
-	//writing destCount
-	writeNewUser.write((char*)&destCount, sizeof(destCount)).write("\n", 1);
+
 	writeNewUser.close();
 }
 
@@ -461,14 +455,6 @@ bool User::giveUser(char* name, char* pass)//actual login validation
 									strcpy_s(email, strlen(give3) + 1, give3);
 									email[strlen(give3)] = '\0';
 									//cout << email << "\n";//comment or delete later
-									//giving destCount
-									pos = giveUser.tellg();
-									pos += 2;
-									giveUser.seekg(pos);
-									int give4 = 0;
-									giveUser.read((char*)&give4, sizeof(give4));
-									destCount = give4;
-									//cout << destCount << "\n";//comment or delete later
 
 									delete[] give1;
 									delete[] give2;
@@ -538,7 +524,7 @@ void User::loggedMenue(char* user)
 		}
 		if (option == 2)
 		{
-			destination.rateDest();
+			destination.rateDest(username);
 		}
 		if (option == 3)
 		{
@@ -563,7 +549,7 @@ Destination::Destination()
 }
 
 
-void Destination::rateDest()
+void Destination::rateDest(char* username)
 {
 	char* getData = new char[1024];
 	bool good = false;
@@ -822,6 +808,7 @@ void Destination::rateDest()
 	}
 	if (good == true && ready == false)//adding in the file
 	{
+		writeDest(username);
 		cout << "You successfully created a new rating.\n";
 	}
 	if (ready == true)
@@ -829,6 +816,42 @@ void Destination::rateDest()
 		cout << "You canceled the destination rating.\n";
 	}
 	delete[] getData;
+}
+
+
+void Destination::writeDest(char* username)
+{
+	//writing the maxLeng
+	ofstream writeNewDest("C:/Users/ACER/source/repos/fmi project (1)/UsersLocationsData.txt", ios::app);
+	int maxLeng = strlen(username) + 1 + strlen(destination) + 1 + strlen(comment) + 1 + strlen(photos) + 1 + (3 * 7) + (4 * 4) + (5 * 2);//each char array + "\0" from each array + the leng of the 7 int values + every number telling the array size + every "\n"
+	writeNewDest.write((char*)&maxLeng, sizeof(maxLeng));
+	//write username (so the rating can be found)
+	int leng = strlen(username) + 1;
+	writeNewDest.write((char*)&leng, sizeof(leng));
+	writeNewDest.write(username, leng).write("\n", 1);
+	//write destination
+	leng = strlen(destination) + 1;
+	writeNewDest.write((char*)&leng, sizeof(leng));
+	writeNewDest.write(destination, leng).write("\n", 1);
+	//write comment
+	leng = strlen(comment) + 1;
+	writeNewDest.write((char*)&leng, sizeof(leng));
+	writeNewDest.write(comment, leng).write("\n", 1);
+	//write photos
+	leng = strlen(photos) + 1;
+	writeNewDest.write((char*)&leng, sizeof(leng));
+	writeNewDest.write(photos, leng).write("\n", 1);
+	//writing the ints
+	writeNewDest.write((char*)&yearS, sizeof(yearS))
+		.write((char*)&monthS, sizeof(monthS))
+		.write((char*)&dayS, sizeof(dayS))
+		.write((char*)&yearE, sizeof(yearE))
+		.write((char*)&monthE, sizeof(monthE))
+		.write((char*)&dayE, sizeof(dayE))
+		.write((char*)&grade, sizeof(grade))
+		.write("\n", 1);
+	
+	writeNewDest.close();
 }
 
 
